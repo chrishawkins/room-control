@@ -26,7 +26,13 @@ router.get('/volume', function(req, res, next) {
 });
 
 router.post('/volume/:value', function(req, res, next) {
-  tvImpl.setVolume(res.params.value).then(() => {
+  tvImpl.setVolume(parseInt(req.params.value)).then(() => {
+    res.sendStatus(200);
+  });
+});
+
+router.post('/incrementVolume/:value', function(req, res, next) {
+  tvImpl.incrementVolume(parseInt(req.params.value)).then(() => {
     res.sendStatus(200);
   });
 });

@@ -33,6 +33,12 @@ class SonyBraviaTV {
     return this._get('AudioVolume');
   }
 
+  incrementVolume(increment) {
+    return this.getVolume().then(volume => {
+      return this.setVolume(volume + increment);
+    });
+  }
+
   _set(property, param) {
     let commandConfig = CommandMap[property];
     let paramInt = +param;
