@@ -1,7 +1,7 @@
 {
   "network": {
     "tv": {
-      "ip": "192.168.1.99",
+      "ip": "192.168.1.8",
       "implementation": "SonyBraviaTV"
     },
     "xbox": {

@@ -1,0 +1,8 @@
+{
+  "PowerStatus": {
+    "fourCC": "POWR",
+    "type": "ON_OFF",
+    "get": true,
+    "set": true
+  }
+}
