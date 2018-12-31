@@ -81,6 +81,7 @@ typings/
 
 # Scratch files
 plan.md
+experiments
 
 # Local Configuration
 config/config.json

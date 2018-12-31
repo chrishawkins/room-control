@@ -12,6 +12,7 @@
     "express": "^4.16.4",
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "upnp-mediarenderer-client": "^1.2.4"
   }
 }

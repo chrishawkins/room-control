@@ -1,4 +1,4 @@
-const net = require('net');
+const TcpClientManager = require(__basedir + '/util/TcpClientManager.js');
 const CommandMap = require('./CommandMap.json');
 
 class SonyBraviaTV {
@@ -8,7 +8,6 @@ class SonyBraviaTV {
     this.connection = {
       ip: config.ip,
       port: config.port || 20060,
-      lifetime: config.lifetime || 30,
     };
     this.filters = {};
   }
@@ -67,65 +66,26 @@ class SonyBraviaTV {
 
   _sendCommandTCP(command) {
     console.log(`Bravia send: ${command}`);
-    return this._createClientIfNeeded()
-      .then(client =>
-        new Promise((resolve, reject) => {
-          try {
-            client.write(command + "\n");
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        })
-      ).catch(e => {
-        console.error('Failed to communicate with Bravia');
-        console.error(e);
-      });
+    if (!this._tcpManager) {
+      this._tcpManager = new TcpClientManager(
+        this.connection.ip,
+        this.connection.port,
+        message => this._onMessage(message));
+    }
+
+    return this._tcpManager.getClient()
+      .then(client => client.sendCommand(command))
+      .catch(error => console.error("Could not communicate with Bravia: " + error));
   }
 
-  _messageReceived(message) {
+  _onMessage(message) {
     Object.keys(this.filters).forEach(filter => {
-      let fourCC = message.toString().substring(3, 7);
+      let fourCC = message.substring(3, 7);
       console.log("fourcc: " + fourCC);
       if (fourCC === filter) {
-        this.filters[filter](message.toString());
+        this.filters[filter](message);
       }
     })
-  }
-
-  _createClientIfNeeded() {
-    if (this._client) {
-      return new Promise((resolve, reject) => {
-        resolve(this._client);
-      });
-    }
-    return new Promise((resolve, reject) => {
-      var resolved = false;
-      this._client = new net.Socket();
-      this._client.connect(this.connection.port, this.connection.ip, () => {
-        console.log('Bravia TV Connected');
-        resolved = true;
-        resolve(this._client);
-      });
-      this._client.on('data', data => {
-      	console.log('Received: ' + data);
-        this._messageReceived(data);
-      });
-      this._client.on('error', error => {
-        console.error('TCP error: ' + error);
-        console.log('Encountered TCP error, closing connection');
-        this._client.close();
-        this._client = null;
-        if (!resolved) {
-          resolved = true;
-          reject(error);
-        }
-      });
-      this._client.on('close', () => {
-      	console.log('Connection closed');
-        this.client = null;
-      });
-    });
   }
 }
 
