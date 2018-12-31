@@ -11,5 +11,8 @@
     "hue": {
       "ip": "192.168.1.101"
     }
+  },
+  "scripts": {
+    "xboxInput": "HDMI1"
   }
 }

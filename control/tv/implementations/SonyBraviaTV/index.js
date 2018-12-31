@@ -98,7 +98,6 @@ class SonyBraviaTV {
       return this._set('Input', 0);
     }
     for (var i in Inputs) {
-      console.log(i);
       if (inputValue.startsWith(Inputs[i].label)) {
         let number = parseInt(inputValue.substring(Inputs[i].label.length));
         if (number != NaN) {
