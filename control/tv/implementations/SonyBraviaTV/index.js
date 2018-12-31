@@ -5,11 +5,11 @@ class SonyBraviaTV {
 
   constructor(config) {
     this.ip = config.ip;
-    this.connection = {
-      ip: config.ip,
-      port: config.port || 20060,
-    };
     this.filters = {};
+    this._tcpManager = new TcpClientManager(
+      config.ip,
+      config.port || 20060,
+      message => this._onMessage(message));
   }
 
   turnOn() {
@@ -66,16 +66,10 @@ class SonyBraviaTV {
 
   _sendCommandTCP(command) {
     console.log(`Bravia send: ${command}`);
-    if (!this._tcpManager) {
-      this._tcpManager = new TcpClientManager(
-        this.connection.ip,
-        this.connection.port,
-        message => this._onMessage(message));
-    }
 
     return this._tcpManager.getClient()
       .then(client => client.sendCommand(command))
-      .catch(error => console.error("Could not communicate with Bravia: " + error));
+      .catch(error => console.error('Could not communicate with Bravia: ' + error));
   }
 
   _onMessage(message) {

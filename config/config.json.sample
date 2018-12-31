@@ -5,7 +5,8 @@
       "implementation": "SonyBraviaTV"
     },
     "xbox": {
-      "ip": "192.168.1.98"
+      "ip": "192.168.1.98",
+      "liveId": "FFFFFFFFFFFFFFFF"
     },
     "hue": {
       "ip": "192.168.1.101"

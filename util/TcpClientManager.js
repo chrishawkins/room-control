@@ -28,7 +28,7 @@ class TcpClient {
     console.log(`TCP send: ${command}`);
     return new Promise((resolve, reject) => {
       try {
-        this._socket.write(command + "\n");
+        this._socket.write(command + '\n');
         resolve();
       } catch (error) {
         reject(error);
@@ -67,6 +67,8 @@ class TcpClientManager {
             reject(error);
           } else if (this.errorCallback(error)) {
             this.errorCallback(error);
+          } else {
+            console.error("Unhandled TCP error " + error);
           }
         },
         () => resolve(this._client),
