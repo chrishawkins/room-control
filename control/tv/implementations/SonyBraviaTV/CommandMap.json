@@ -1,7 +1,13 @@
 {
   "PowerStatus": {
     "fourCC": "POWR",
-    "type": "ON_OFF",
+    "type": "BOOL",
+    "get": true,
+    "set": true
+  },
+  "AudioVolume": {
+    "fourCC": "VOLU",
+    "type": "VALUE",
     "get": true,
     "set": true
   }
