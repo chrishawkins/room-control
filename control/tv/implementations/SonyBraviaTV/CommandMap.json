@@ -10,5 +10,11 @@
     "type": "VALUE",
     "get": true,
     "set": true
+  },
+  "Input": {
+    "fourCC": "INPT",
+    "type": "VALUE",
+    "get": true,
+    "set": true
   }
 }
