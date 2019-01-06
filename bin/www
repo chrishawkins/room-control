@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('tv-control:server');
 var http = require('http');
+require('systemd');
 
 /**
  * Get port from environment and store in Express.
@@ -25,7 +26,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(process.env.LISTEN_PID > 0 ? 'systemd' : port);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -83,6 +84,10 @@ function onError(error) {
 
 function onListening() {
   var addr = server.address();
+  if (addr === null) {
+    debug('Listening on socket');
+    return;
+  }
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;

@@ -1,0 +1,8 @@
+[Unit]
+Description=Room Control Service
+Requires=room-control.socket
+
+[Service]
+ExecStart=/home/pi/Work/room-control/bin/www
+Environment="PORT=3000"
+StandardOutput=journal
