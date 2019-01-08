@@ -2,5 +2,13 @@
   "HDMI1": "extInput:hdmi?port=1",
   "HDMI2": "extInput:hdmi?port=2",
   "HDMI3": "extInput:hdmi?port=3",
-  "HDMI4": "extInput:hdmi?port=4"
+  "HDMI4": "extInput:hdmi?port=4",
+  "Component1": "extInput:component?port=1",
+  "Component2": "extInput:component?port=2",
+  "Component3": "extInput:component?port=3",
+  "Component4": "extInput:component?port=4",
+  "Composite1": "extInput:composite?port=1",
+  "Composite2": "extInput:composite?port=2",
+  "Composite3": "extInput:composite?port=3",
+  "Composite4": "extInput:composite?port=4"
 }
