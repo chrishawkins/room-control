@@ -11,7 +11,7 @@ function wrapCommand(res, commandPromise) {
       res.send({ value: value });
     }
   }).catch(error => {
-    console.error('Error during request: ' + error);
+    console.error('Error during request: ' + JSON.stringify(error));
     res.status(500).send(JSON.stringify(error));
   });
 }
