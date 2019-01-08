@@ -6,7 +6,8 @@
     },
     "xbox": {
       "ip": "192.168.1.98",
-      "liveId": "FFFFFFFFFFFFFFFF"
+      "liveId": "FFFFFFFFFFFFFFFF",
+      "preSharedKey": "0000"
     },
     "hue": {
       "ip": "192.168.1.101"

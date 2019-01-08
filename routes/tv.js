@@ -1,62 +1,47 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 const tvImpl = require(__basedir + '/control/tv');
 
-router.post('/turnOn', function(req, res, next) {
-  tvImpl.turnOn().then(() => {
-    res.sendStatus(200);
+function wrapCommand(res, commandPromise) {
+  return commandPromise.then(value => {
+    if (!value) {
+      res.sendStatus(200);
+    } else {
+      res.send({ value: value });
+    }
   }).catch(error => {
-    res.status(500).send(error);
+    console.error('Error during request: ' + error);
+    res.status(500).send(JSON.stringify(error));
   });
+}
+
+router.post('/turnOn', function(req, res, next) {
+  return wrapCommand(res, tvImpl.turnOn());
 });
 
 router.post('/turnOff', function(req, res, next) {
-  tvImpl.turnOff().then(() => {
-    res.status(200).send();
-  }).catch(error => {
-    res.status(500).send(error);
-  });
+  return wrapCommand(res, tvImpl.turnOff());
 });
 
 router.get('/volume', function(req, res, next) {
-  tvImpl.getVolume().then(volume => {
-    res.send('' + volume);
-  }).catch(error => {
-    res.status(500).send(error);
-  });
+  return wrapCommand(res, tvImpl.getVolume());
 });
 
 router.post('/volume/:value', function(req, res, next) {
-  tvImpl.setVolume(parseInt(req.params.value)).then(() => {
-    res.sendStatus(200);
-  }).catch(error => {
-    res.status(500).send(error);
-  });
+  return wrapCommand(res, tvImpl.setVolume(parseInt(req.params.value)));
 });
 
 router.post('/incrementVolume/:value', function(req, res, next) {
-  tvImpl.incrementVolume(parseInt(req.params.value)).then(() => {
-    res.sendStatus(200);
-  }).catch(error => {
-    res.status(500).send(error);
-  });
+  return wrapCommand(res, tvImpl.incrementVolume(parseInt(req.params.value)));
 });
 
 router.get('/input', function(req, res, next) {
-  tvImpl.getInput().then(input => {
-    res.send(input);
-  }).catch(error => {
-    res.status(500).send(error);
-  });
+  return wrapCommand(res, tvImpl.getInput());
 });
 
 router.post('/input/:input', function(req, res, next) {
-  tvImpl.setInput(req.params.input).then(input => {
-    res.send(input);
-  }).catch(error => {
-    res.status(500).send(error);
-  });
+  return wrapCommand(res, tvImpl.setInput(req.params.input));
 });
 
 module.exports = router;

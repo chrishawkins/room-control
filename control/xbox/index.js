@@ -1,5 +1,4 @@
 const config = require(__basedir + '/config/config');
-const TcpClientManager = require(__basedir + '/util/TcpClientManager.js');
 const Constants = require('./Constants.json');
 
 const dgram = require('dgram');
@@ -34,13 +33,3 @@ class Xbox {
 }
 
 module.exports = new Xbox(config.network.xbox);
-
-
-
-// <Buffer 00 10 46 44 30 30 46 35 34 32 42 32 46 38 41 35 39 39 00>
-// <Buffer c3 9d 02 00 13 00 00>
-// <Buffer c3 9d 02 00 13 00 00 00 10 46 44 30 30 46 35 34 32 42 32 46 38 41 35 39 39 00>
-
-// <Buffer 00 10 46 44 30 30 46 35 34 32 42 32 46 38 41 35 39 39 00>
-// <Buffer dd 02 00 13 00 00>
-// <Buffer dd 02 00 13 00 00 00 10 46 44 30 30 46 35 34 32 42 32 46 38 41 35 39 39 00>

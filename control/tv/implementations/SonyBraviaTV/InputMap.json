@@ -1,0 +1,6 @@
+{
+  "HDMI1": "extInput:hdmi?port=1",
+  "HDMI2": "extInput:hdmi?port=2",
+  "HDMI3": "extInput:hdmi?port=3",
+  "HDMI4": "extInput:hdmi?port=4"
+}
