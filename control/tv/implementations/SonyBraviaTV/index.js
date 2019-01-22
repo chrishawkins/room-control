@@ -1,9 +1,11 @@
 const fetch = require('node-fetch');
 const InputMap = require('./InputMap.json');
+const AppMap = require('./AppMap.json');
 
 const SYSTEM_SERVICE = 'system';
 const AUDIO_SERVICE = 'audio';
 const AV_CONTENT_SERVICE = 'avContent';
+const APP_SERVICE = 'appControl';
 
 class SonyBraviaTV {
 
@@ -80,11 +82,19 @@ class SonyBraviaTV {
   }
 
   setInput(inputValue) {
-    this._sendCommand(
+    return this._sendCommand(
       AV_CONTENT_SERVICE,
       'setPlayContent',
       [{ uri: InputMap[inputValue] }],
     )
+  }
+
+  startApp(identifier) {
+    return this._sendCommand(
+      APP_SERVICE,
+      'setActiveApp',
+      [{ uri: AppMap[identifier] }],
+    );
   }
 
   _sendCommand(service, command, params = []) {
@@ -100,9 +110,9 @@ class SonyBraviaTV {
         method: 'post',
         headers: { 'X-Auth-PSK': this.psk },
         body: body,
-      }).then(function(response) {
+      }).then(response => {
         return response.json();
-      }).then(function(response) {
+      }).then(response => {
         if (response.error && (!response.result || response.result.length === 0)) {
           reject({ code: response.error[0] });
         } else {

@@ -44,4 +44,8 @@ router.post('/input/:input', function(req, res, next) {
   return wrapCommand(res, tvImpl.setInput(req.params.input));
 });
 
+router.post('/apps/:app/start', function(req, res, next) {
+  return wrapCommand(res, tvImpl.startApp(req.params.app));
+});
+
 module.exports = router;
