@@ -1,6 +1,8 @@
 const fetch = require('node-fetch');
+const xmlbuilder = require('xmlbuilder');
 const InputMap = require('./InputMap.json');
 const AppMap = require('./AppMap.json');
+const CommandMap = require('./CommandMap.json');
 
 const SYSTEM_SERVICE = 'system';
 const AUDIO_SERVICE = 'audio';
@@ -17,7 +19,7 @@ class SonyBraviaTV {
   }
 
   turnOn() {
-    return this._sendCommand(
+    return this._sendAPICommand(
       SYSTEM_SERVICE,
       'setPowerStatus',
       [{ status: true }],
@@ -25,7 +27,7 @@ class SonyBraviaTV {
   }
 
   turnOff() {
-    return this._sendCommand(
+    return this._sendAPICommand(
       SYSTEM_SERVICE,
       'setPowerStatus',
       [{ status: false }],
@@ -33,7 +35,7 @@ class SonyBraviaTV {
   }
 
   setVolume(volume) {
-    return this._sendCommand(
+    return this._sendAPICommand(
       AUDIO_SERVICE,
       'setAudioVolume',
       [{ volume: '' + volume, target: 'speaker' }],
@@ -42,7 +44,7 @@ class SonyBraviaTV {
 
   getVolume() {
     return new Promise((resolve, reject) => {
-      this._sendCommand(
+      this._sendAPICommand(
         AUDIO_SERVICE,
         'getVolumeInformation',
       ).then(result => {
@@ -67,7 +69,7 @@ class SonyBraviaTV {
 
   getInput() {
     return new Promise((resolve, reject) => {
-      this._sendCommand(
+      this._sendAPICommand(
         AV_CONTENT_SERVICE,
         'getPlayingContentInfo',
       ).then(result => {
@@ -82,7 +84,7 @@ class SonyBraviaTV {
   }
 
   setInput(inputValue) {
-    return this._sendCommand(
+    return this._sendAPICommand(
       AV_CONTENT_SERVICE,
       'setPlayContent',
       [{ uri: InputMap[inputValue] }],
@@ -90,7 +92,7 @@ class SonyBraviaTV {
   }
 
   startApp(identifier) {
-    return this._sendCommand(
+    return this._sendAPICommand(
       APP_SERVICE,
       'setActiveApp',
       [{ uri: AppMap[identifier] }],
@@ -98,37 +100,65 @@ class SonyBraviaTV {
   }
 
   setMute(value) {
-    return this._sendCommand(
+    return this._sendAPICommand(
       AUDIO_SERVICE,
       'setAudioMute',
       [{ status: value }],
     );
   }
 
-  _sendCommand(service, command, params = []) {
-    let body = JSON.stringify({
-      method: command,
-      id: ++this.id,
-      params: params,
-      version: "1.0",
-    });
-    console.log('Sending: ' + body);
-    return new Promise((resolve, reject) => {
-      fetch('http://' + this.ip + ':' + this.port + '/sony/' + service, {
-        method: 'post',
-        headers: { 'X-Auth-PSK': this.psk },
-        body: body,
-      }).then(response => {
-        return response.json();
-      }).then(response => {
+  sendRemoteCommand(command) {
+    return this._sendIRCCCommand(CommandMap[command]);
+  }
+
+  _sendAPICommand(service, command, params = []) {
+    return this._sendCommandWithBody(
+      service, 
+      JSON.stringify({
+        method: command,
+        id: ++this.id,
+        params: params,
+        version: "1.0",
+      }),
+      { 'Content-Type': 'application/json; charset=UTF-8' }
+    ).then(response => response.json())
+    .then(response => {
+      return new Promise((resolve, reject) => {
         if (response.error && (!response.result || response.result.length === 0)) {
           reject({ code: response.error[0] });
         } else {
           resolve(response.result[0]);
         }
-      }).catch(error => {
-        reject(error);
       });
+    });
+  }
+
+  _sendIRCCCommand(command) {
+    return this._sendCommandWithBody(
+      'IRCC',
+      xmlbuilder
+        .create('s:Envelope')
+          .att('xmlns:s', 'http://schemas.xmlsoap.org/soap/envelope/')
+          .att('s:encodingStyle', 'http://schemas.xmlsoap.org/soap/encoding/')
+          .ele('s:Body')
+            .ele('u:X_SendIRCC', {'xmlns:u': 'urn:schemas-sony-com:service:IRCC:1'})
+              .ele('IRCCCode', {}, command)
+        .doc().end({ pretty: true}),
+      {
+        'SOAPACTION': '"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC"',
+        'Content-Type': 'text/xml; charset=UTF-8'
+      }
+    );
+  }
+
+  _sendCommandWithBody(service, body, additionalHeaders = {}) {
+    let headers = Object.assign({ 'X-Auth-PSK': this.psk }, additionalHeaders);
+    console.log('Headers: ' + JSON.stringify(headers));
+    console.log('Sending: ' + body);
+    return fetch('http://' + this.ip + ':' + this.port + '/sony/' + service, {
+      method: 'post',
+      headers: headers,
+      body: body,
     });
   }
 }

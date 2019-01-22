@@ -56,4 +56,12 @@ router.post('/unmute', function(req, res, next) {
   return wrapCommand(res, tvImpl.setMute(false));
 });
 
+router.post('/remote/:command', function(req, res, next) {
+  return wrapCommand(res, tvImpl.sendRemoteCommand(req.params.command));
+});
+
+router.post('/ircc/:code', function(req, res, next) {
+  return wrapCommand(res, tvImpl._sendIRCCCommand(req.params.code));
+});
+
 module.exports = router;
