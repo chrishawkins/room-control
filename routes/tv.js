@@ -48,4 +48,12 @@ router.post('/apps/:app/start', function(req, res, next) {
   return wrapCommand(res, tvImpl.startApp(req.params.app));
 });
 
+router.post('/mute', function(req, res, next) {
+  return wrapCommand(res, tvImpl.setMute(true));
+});
+
+router.post('/unmute', function(req, res, next) {
+  return wrapCommand(res, tvImpl.setMute(false));
+});
+
 module.exports = router;

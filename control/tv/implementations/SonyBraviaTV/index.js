@@ -97,6 +97,14 @@ class SonyBraviaTV {
     );
   }
 
+  setMute(value) {
+    return this._sendCommand(
+      AUDIO_SERVICE,
+      'setAudioMute',
+      [{ status: value }],
+    );
+  }
+
   _sendCommand(service, command, params = []) {
     let body = JSON.stringify({
       method: command,
