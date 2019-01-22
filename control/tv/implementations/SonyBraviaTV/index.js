@@ -111,6 +111,14 @@ class SonyBraviaTV {
     return this._sendIRCCCommand(CommandMap[command]);
   }
 
+  printApps() {
+    return this._sendAPICommand(
+      APP_SERVICE,
+      'getApplicationList'
+    ).then(result => console.log(result))
+    .catch(error => console.error(error));
+  }
+
   _sendAPICommand(service, command, params = []) {
     return this._sendCommandWithBody(
       service, 

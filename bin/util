@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+global.__basedir = __dirname + '/..';
+
+if (process.argv[2] === 'list-tv-apps') {
+    let tv = require('../control/tv');
+    return tv.printApps().then(() => process.exit());
+}
+
+console.error('Unrecognized command');
+process.exit(1);

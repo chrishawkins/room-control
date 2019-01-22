@@ -1,4 +1,5 @@
 {
     "YouTube": "com.sony.dtv.com.google.android.youtube.tv.com.google.android.apps.youtube.tv.activity.ShellActivity",
-    "Netflix": "com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity"
+    "Netflix": "com.sony.dtv.com.netflix.ninja.com.netflix.ninja.MainActivity",
+    "Hulu": "com.sony.dtv.com.hulu.livingroomplus.com.hulu.livingroomplus.MainActivity"
 }
