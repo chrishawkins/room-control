@@ -10,6 +10,7 @@ class SonyBraviaTV {
   constructor(config) {
     this.ip = config.ip;
     this.psk = config.preSharedKey;
+    this.port = config.port || 80;
     this.id = 0;
   }
 
@@ -95,7 +96,7 @@ class SonyBraviaTV {
     });
     console.log('Sending: ' + body);
     return new Promise((resolve, reject) => {
-      fetch('http://' + this.ip + '/sony/' + service, {
+      fetch('http://' + this.ip + ':' + this.port + '/sony/' + service, {
         method: 'post',
         headers: { 'X-Auth-PSK': this.psk },
         body: body,
